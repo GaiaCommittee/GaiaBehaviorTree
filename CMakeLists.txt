@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.10)
 #==============================
 
 if (NOT PROJECT_DECLARED)
-    project("Gaia Blackboards" LANGUAGES CXX VERSION 0.9)
+    project("Gaia Behavior Tree" LANGUAGES CXX VERSION 0.9)
     set(PROJECT_DECLARED)
 endif()
 
