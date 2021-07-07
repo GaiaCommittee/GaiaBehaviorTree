@@ -45,10 +45,8 @@ namespace Gaia::BehaviorTree
         BehaviorType* Emplace(ConstructorArguments... arguments)
         {
             static_assert(std::is_base_of_v<Behavior, BehaviorType>, "BehaviorType should be derived from Behavior.");
-            auto node_instance = std::make_unique<BehaviorType>(arguments...);
-            auto* node_pointer = node_instance.get();
-            DecoratedBehavior = std::move(node_instance);
-            return node_pointer;
+            DecoratedBehavior = std::make_unique<BehaviorType>(arguments...);
+            return DecoratedBehavior.get();
         }
     };
 }
