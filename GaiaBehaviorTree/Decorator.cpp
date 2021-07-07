@@ -10,7 +10,7 @@ namespace Gaia::BehaviorTree
 
         if (DecoratedBehavior)
         {
-            return GetContext()->RegisterBehavior(DecoratedBehavior.get());
+            return RegisterBehavior(GetContext(), DecoratedBehavior.get());
         }
         return Result::Success;
     }
@@ -22,7 +22,7 @@ namespace Gaia::BehaviorTree
 
         if (DecoratedBehavior)
         {
-            return GetContext()->UnregisterBehavior(DecoratedBehavior.get());
+            return UnregisterBehavior(GetContext(), DecoratedBehavior.get());
         }
         return Result::Success;
     }

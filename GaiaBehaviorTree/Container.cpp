@@ -9,7 +9,7 @@ namespace Gaia::BehaviorTree
 
         for (auto& behavior : InnerBehaviors)
         {
-            GetContext()->RegisterBehavior(behavior.get());
+            RegisterBehavior(GetContext(), behavior.get());
         }
 
         return Result::Success;
@@ -22,7 +22,7 @@ namespace Gaia::BehaviorTree
 
         for (auto& behavior : InnerBehaviors)
         {
-            GetContext()->UnregisterBehavior(behavior.get());
+            UnregisterBehavior(GetContext(), behavior.get());
         }
 
         return Result::Success;
