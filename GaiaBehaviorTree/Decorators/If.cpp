@@ -16,13 +16,13 @@ namespace Gaia::BehaviorTree::Decorators
     Result If::OnInitialize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->InitializeBehavior(ConditionNode.get()) & Decorator::OnInitialize();
+        return GetContext()->RegisterBehavior(ConditionNode.get()) & Decorator::OnInitialize();
     }
 
     /// Additionally finalize the condition node.
     Result If::OnFinalize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->InitializeBehavior(ConditionNode.get()) & Decorator::OnFinalize();
+        return GetContext()->RegisterBehavior(ConditionNode.get()) & Decorator::OnFinalize();
     }
 }

@@ -15,14 +15,14 @@ namespace Gaia::BehaviorTree
         Blackboards::Blackboard Blackboard;
 
         /**
-         * @brief Initialize the given behavior node.
+         * @brief Initialize the given behavior node and bind it to this context.
          * @param node The behavior node to initialize.
          */
-        Result InitializeBehavior(Behavior* node);
+        Result RegisterBehavior(Behavior* node);
         /**
-         * @brief Finalize the given behavior node.
+         * @brief Finalize the given behavior node and unbind it from this context.
          * @param node The behavior node to finalize.
          */
-        Result FinalizeBehavior(Behavior* node);
+        Result UnregisterBehavior(Behavior* node);
     };
 }

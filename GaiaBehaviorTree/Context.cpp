@@ -4,7 +4,7 @@
 namespace Gaia::BehaviorTree
 {
     /// Initialize the given behavior node.
-    Result Context::InitializeBehavior(Behavior *node)
+    Result Context::RegisterBehavior(Behavior *node)
     {
         if (!node || node->EnvironmentContext != nullptr) return Result::Failure;
 
@@ -14,7 +14,7 @@ namespace Gaia::BehaviorTree
     }
 
     /// Finalize the given behavior node.
-    Result Context::FinalizeBehavior(Behavior *node)
+    Result Context::UnregisterBehavior(Behavior *node)
     {
         if (!node || node->EnvironmentContext != this) return Result::Failure;
 

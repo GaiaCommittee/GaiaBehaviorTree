@@ -2,12 +2,10 @@
 
 #include "../Decorator.hpp"
 
-#include <functional>
-
 namespace Gaia::BehaviorTree::Decorators
 {
     /**
-     * @brief The decorated function can only be executed when condition node returns success.
+     * @brief Decorated node can only be executed when condition node returns success.
      */
     class If : public Decorator
     {
