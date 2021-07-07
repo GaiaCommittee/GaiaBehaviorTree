@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Context.hpp"
+#include <GaiaBlackboards/GaiaBlackboards.hpp>
+
+#include "Result.hpp"
 
 namespace Gaia::BehaviorTree
 {
@@ -44,6 +46,7 @@ namespace Gaia::BehaviorTree
         /// Make destructor virtual for derived classes.
         virtual ~Behavior() = default;
 
+    protected:
         /// Do something defined by the derived class.
         virtual Result Execute() = 0;
     };
