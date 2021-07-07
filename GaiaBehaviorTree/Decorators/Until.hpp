@@ -11,15 +11,15 @@ namespace Gaia::BehaviorTree
     template<Result StopValue>
     class Until : public Decorator
     {
-    public:
+    protected:
         /**
          * @brief Repeatedly execute the decorated node until it returns StopValue.
          * @return StopValue.
          */
-        Result Execute() override
+        Result OnExecute() override
         {
             if (!GetInnerBehavior()) return Result::Failure;
-            while (GetInnerBehavior()->Execute() != StopValue);
+            while (ExecuteBehavior(GetInnerBehavior()) != StopValue);
             return StopValue;
         }
     };

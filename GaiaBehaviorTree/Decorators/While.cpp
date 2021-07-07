@@ -1,19 +1,20 @@
 #include "While.hpp"
+#include "../Context.hpp"
 
 namespace Gaia::BehaviorTree::Decorators
 {
 
-    Result While::Execute()
+    Result While::OnExecute()
     {
         if (!ConditionNode || !GetInnerBehavior()) return Result::Failure;
 
         Result last_result = Result::Failure;
 
-        while (ConditionNode->Execute() != Result::Failure)
+        while (ExecuteBehavior(ConditionNode.get()) != Result::Failure)
         {
             if (GetInnerBehavior())
             {
-                last_result = GetInnerBehavior()->Execute();
+                last_result = ExecuteBehavior(GetInnerBehavior());
             }
         }
         return last_result;
@@ -22,12 +23,12 @@ namespace Gaia::BehaviorTree::Decorators
     Result While::OnInitialize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->UnregisterBehavior(ConditionNode.get()) & Decorator::OnInitialize();
+        return RegisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
     }
 
     Result While::OnFinalize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->UnregisterBehavior(ConditionNode.get()) & Decorator::OnInitialize();
+        return UnregisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
     }
 }

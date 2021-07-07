@@ -21,8 +21,7 @@ namespace Gaia::BehaviorTree::Containers
         /// Clear the whole select.
         void OnClear() override;
 
-    public:
         /// Execute the select until a node fails.
-        Result Execute() override;
+        Result OnExecute() override;
     };
 }

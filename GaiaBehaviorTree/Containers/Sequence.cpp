@@ -2,12 +2,12 @@
 
 namespace Gaia::BehaviorTree::Containers
 {
-    /// Execute the whole sequence.
-    Result Sequence::Execute()
+    /// OnExecute the whole sequence.
+    Result Sequence::OnExecute()
     {
         for (auto* behavior : Behaviors)
         {
-            if (behavior && behavior->Execute() == Result::Failure) return Result::Failure;
+            if (behavior && ExecuteBehavior(behavior) == Result::Failure) return Result::Failure;
         }
         return Result::Success;
     }

@@ -32,6 +32,16 @@ namespace Gaia::BehaviorTree
         [[nodiscard]] Blackboards::Blackboard* GetBlackboard();
 
         /**
+         * @brief Execute another behavior.
+         * @return Result returned by the given behavior.
+         */
+        static Result ExecuteBehavior(Behavior* behavior);
+        /// Register the given behavior into the given context.
+        static Result RegisterBehavior(Context* context, Behavior* behavior);
+        /// Unregister the given behavior from the given context.
+        static Result UnregisterBehavior(Context* context, Behavior* behavior);
+
+        /**
          * @brief Invoked when this node is added to a context.
          * @return Whether this behavior is successfully initialized or not.
          */
@@ -41,13 +51,11 @@ namespace Gaia::BehaviorTree
          * @return Whether this behavior is successfully finalized or not.
          */
         virtual Result OnFinalize();
+        /// Do something defined by the derived class.
+        virtual Result OnExecute() = 0;
 
     public:
         /// Make destructor virtual for derived classes.
         virtual ~Behavior() = default;
-
-    protected:
-        /// Do something defined by the derived class.
-        virtual Result Execute() = 0;
     };
 }

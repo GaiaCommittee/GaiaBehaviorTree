@@ -2,12 +2,12 @@
 
 namespace Gaia::BehaviorTree::Decorators
 {
-    /// Execute and reverse the result.
-    Result Reverse::Execute()
+    /// OnExecute and reverse the result.
+    Result Reverse::OnExecute()
     {
         if (GetInnerBehavior())
         {
-            return !GetInnerBehavior()->Execute();
+            return !ExecuteBehavior(GetInnerBehavior());
         }
         return Result::Success;
     }

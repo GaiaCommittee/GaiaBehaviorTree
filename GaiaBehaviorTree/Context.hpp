@@ -12,6 +12,9 @@ namespace Gaia::BehaviorTree
 
     class Context
     {
+        friend Result Behavior::RegisterBehavior(Context* context, Behavior* behavior);
+        friend Result Behavior::UnregisterBehavior(Context* context, Behavior* behavior);
+
     protected:
         /// Values blackboard.
         Blackboards::Blackboard Blackboard;
@@ -59,10 +62,6 @@ namespace Gaia::BehaviorTree
          * @brief Execute the root node.
          * @return The result of the root node.
          */
-        Result Execute()
-        {
-            if (RootBehavior) return RootBehavior->Execute();
-            return Result::Failure;
-        }
+        Result Execute();
     };
 }

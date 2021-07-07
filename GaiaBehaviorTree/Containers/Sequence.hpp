@@ -23,8 +23,7 @@ namespace Gaia::BehaviorTree::Containers
         /// Clear the whole sequence.
         void OnClear() override;
 
-    public:
         /// Execute the sequence until a node fails.
-        Result Execute() override;
+        Result OnExecute() override;
     };
 }

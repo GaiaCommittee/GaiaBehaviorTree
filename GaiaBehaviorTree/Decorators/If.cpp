@@ -2,12 +2,12 @@
 
 namespace Gaia::BehaviorTree::Decorators
 {
-
-    Result If::Execute()
+    /// Execute if the condition node return Success.
+    Result If::OnExecute()
     {
-        if (ConditionNode && ConditionNode->Execute() == Result::Success)
+        if (ConditionNode && ExecuteBehavior(ConditionNode.get()) == Result::Success && GetInnerBehavior())
         {
-            return GetInnerBehavior()->Execute();
+            return ExecuteBehavior(GetInnerBehavior());
         }
         return Result::Failure;
     }
@@ -16,13 +16,13 @@ namespace Gaia::BehaviorTree::Decorators
     Result If::OnInitialize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->RegisterBehavior(ConditionNode.get()) & Decorator::OnInitialize();
+        return RegisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
     }
 
     /// Additionally finalize the condition node.
     Result If::OnFinalize()
     {
         if (!GetContext()) return Result::Failure;
-        return GetContext()->RegisterBehavior(ConditionNode.get()) & Decorator::OnFinalize();
+        return UnregisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnFinalize();
     }
 }

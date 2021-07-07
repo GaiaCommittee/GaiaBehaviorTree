@@ -24,4 +24,11 @@ namespace Gaia::BehaviorTree
 
         return result;
     }
+
+    /// Execute the root behavior.
+    Result Context::Execute()
+    {
+        if (RootBehavior) return Behavior::ExecuteBehavior(RootBehavior.get());
+        return Result::Failure;
+    }
 }

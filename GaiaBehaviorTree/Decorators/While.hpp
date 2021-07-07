@@ -20,15 +20,14 @@ namespace Gaia::BehaviorTree::Decorators
         Result OnInitialize() override;
         /// Additionally finalize the condition node.
         Result OnFinalize() override;
-
-    public:
         /**
          * @brief Execute until the condition node returns Failure.
          * @return Returns Failure if condition node is null, otherwise returns the result from the inner behavior
          *         when condition node firstly returns Failure.
          */
-        Result Execute() override;
+        Result OnExecute() override;
 
+    public:
         /**
          * @brief Construct and add this behavior as the condition node to this decorator.
          * @tparam BehaviorType The type of the behavior to construct.

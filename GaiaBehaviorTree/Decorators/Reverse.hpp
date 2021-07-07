@@ -9,8 +9,8 @@ namespace Gaia::BehaviorTree::Decorators
      */
     class Reverse : public Decorator
     {
-    public:
+    protected:
         /// Execute and reverse the result.
-        Result Execute() override;
+        Result OnExecute() override;
     };
 }
