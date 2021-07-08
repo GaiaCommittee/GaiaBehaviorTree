@@ -37,7 +37,9 @@ namespace Gaia::BehaviorTree::Decorators
             static_assert(std::is_base_of_v<Behavior, BehaviorType>, "BehaviorType should be derived from Behavior.");
             auto node_instance = std::make_unique<BehaviorType>(arguments...);
             auto* node_pointer = node_instance.get();
+            if (ConditionNode) UnregisterBehavior(GetContext(), ConditionNode.get());
             ConditionNode = std::move(node_instance);
+            RegisterBehavior(GetContext(), ConditionNode.get());
             return node_pointer;
         }
     };
