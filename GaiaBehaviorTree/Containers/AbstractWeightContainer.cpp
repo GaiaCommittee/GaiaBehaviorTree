@@ -2,7 +2,7 @@
 
 namespace Gaia::BehaviorTree::Containers
 {
-    /// Empalce a node into the list.
+    /// Emplace a node into the list.
     void AbstractWeightContainer::OnEmplace(Behavior *behavior)
     {
         AddWeightNode(behavior, 1);
