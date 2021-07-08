@@ -55,7 +55,7 @@ namespace Gaia::BehaviorTree
                 RootBehavior = nullptr;
                 throw std::runtime_error("Failed to register the new root behavior.");
             }
-            return RootBehavior.get();
+            return static_cast<BehaviorType*>(RootBehavior.get());
         }
 
         /**

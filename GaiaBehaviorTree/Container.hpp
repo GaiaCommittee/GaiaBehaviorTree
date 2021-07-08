@@ -42,7 +42,7 @@ namespace Gaia::BehaviorTree
             auto* node = InnerBehaviors.emplace_back(std::make_unique<BehaviorType>(arguments...)).get();
             RegisterBehavior(GetContext(), node);
             OnEmplace(node);
-            return node;
+            return static_cast<BehaviorType*>(node);
         }
 
         /**

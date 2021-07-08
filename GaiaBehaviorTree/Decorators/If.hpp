@@ -14,10 +14,6 @@ namespace Gaia::BehaviorTree::Decorators
         std::unique_ptr<Behavior> ConditionNode;
 
     protected:
-        /// Additionally initialize the condition node.
-        Result OnInitialize() override;
-        /// Additionally finalize the condition node.
-        Result OnFinalize() override;
         /**
          * @brief Execute if the condition node return Success.
          * @return The execution result of the decorated node, otherwise returns Result::Failure.

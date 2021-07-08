@@ -11,18 +11,4 @@ namespace Gaia::BehaviorTree::Decorators
         }
         return Result::Failure;
     }
-
-    /// Additionally initialize the condition node.
-    Result If::OnInitialize()
-    {
-        if (!GetContext()) return Result::Failure;
-        return RegisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
-    }
-
-    /// Additionally finalize the condition node.
-    Result If::OnFinalize()
-    {
-        if (!GetContext()) return Result::Failure;
-        return UnregisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnFinalize();
-    }
 }

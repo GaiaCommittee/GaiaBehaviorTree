@@ -48,7 +48,7 @@ namespace Gaia::BehaviorTree
             UnregisterBehavior(GetContext(), DecoratedBehavior.get());
             DecoratedBehavior = std::make_unique<BehaviorType>(arguments...);
             RegisterBehavior(GetContext(), DecoratedBehavior.get());
-            return DecoratedBehavior.get();
+            return static_cast<BehaviorType*>(DecoratedBehavior.get());
         }
     };
 }

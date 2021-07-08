@@ -3,7 +3,7 @@
 
 namespace Gaia::BehaviorTree::Decorators
 {
-
+    /// Execute until the condition node returns Failure.
     Result While::OnExecute()
     {
         if (!ConditionNode || !GetInnerBehavior()) return Result::Failure;
@@ -18,17 +18,5 @@ namespace Gaia::BehaviorTree::Decorators
             }
         }
         return last_result;
-    }
-
-    Result While::OnInitialize()
-    {
-        if (!GetContext()) return Result::Failure;
-        return RegisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
-    }
-
-    Result While::OnFinalize()
-    {
-        if (!GetContext()) return Result::Failure;
-        return UnregisterBehavior(GetContext(), ConditionNode.get()) & Decorator::OnInitialize();
     }
 }

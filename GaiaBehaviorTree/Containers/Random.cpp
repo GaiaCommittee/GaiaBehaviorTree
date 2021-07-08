@@ -21,5 +21,7 @@ namespace Gaia::BehaviorTree::Containers
                 return ExecuteBehavior(node);
             }
         }
+
+        return Result::Failure;
     }
 }
