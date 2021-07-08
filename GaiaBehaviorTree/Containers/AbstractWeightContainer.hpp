@@ -55,6 +55,7 @@ namespace Gaia::BehaviorTree::Containers
         {
             static_assert(std::is_base_of_v<Behavior, BehaviorType>, "BehaviorType should be derived from Behavior.");
             auto* node = Emplace<BehaviorType>(arguments...);
+            RegisterBehavior(GetContext(), node);
             AddWeightNode(node, weight);
             return node;
         }
@@ -72,6 +73,7 @@ namespace Gaia::BehaviorTree::Containers
                                                   ConstructorArguments... arguments)
         {
             auto* node = Container::Emplace<BehaviorType>(arguments...);
+            RegisterBehavior(GetContext(), node);
             for (auto index = 0; index < count; ++index)
             {
                 AddWeightNode(node, weight);

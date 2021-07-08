@@ -40,6 +40,7 @@ namespace Gaia::BehaviorTree
         {
             static_assert(std::is_base_of_v<Behavior, BehaviorType>, "BehaviorType should be derived from Behavior.");
             auto* node = InnerBehaviors.emplace_back(std::make_unique<BehaviorType>(arguments...)).get();
+            RegisterBehavior(GetContext(), node);
             OnEmplace(node);
             return node;
         }
@@ -56,6 +57,7 @@ namespace Gaia::BehaviorTree
         BehaviorType* RepeatedlyEmplace(unsigned int count, ConstructorArguments... arguments)
         {
             auto* node = Container::Emplace<BehaviorType>(arguments...);
+            RegisterBehavior(GetContext(), node);
             for (auto index = 0; index < count; ++index)
             {
                 OnEmplace(node);

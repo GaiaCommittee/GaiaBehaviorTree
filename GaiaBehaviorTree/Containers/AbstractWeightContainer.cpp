@@ -11,6 +11,10 @@ namespace Gaia::BehaviorTree::Containers
     /// Clear the whole list.
     void AbstractWeightContainer::OnClear()
     {
+        for (const auto& [weight, node] : Behaviors)
+        {
+            UnregisterBehavior(GetContext(), node);
+        }
         Behaviors.clear();
         TotalWeightSource = 0;
     }

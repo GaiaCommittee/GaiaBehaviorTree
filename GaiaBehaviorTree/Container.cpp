@@ -32,6 +32,12 @@ namespace Gaia::BehaviorTree
     void Container::Clear()
     {
         OnClear();
+
+        for (const auto& behavior : InnerBehaviors)
+        {
+            UnregisterBehavior(GetContext(), behavior.get());
+        }
+
         InnerBehaviors.clear();
     }
 }
