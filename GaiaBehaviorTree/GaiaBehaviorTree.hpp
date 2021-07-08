@@ -18,5 +18,8 @@
 #include "Decorators/Until.hpp"
 #include "Decorators/While.hpp"
 
+#include "Behaviors/SuccessBehavior.hpp"
+#include "Behaviors/FailureBehavior.hpp"
+
 namespace Gaia::BehaviorTree
 {}
