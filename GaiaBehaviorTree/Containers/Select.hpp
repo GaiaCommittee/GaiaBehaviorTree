@@ -10,7 +10,7 @@ namespace Gaia::BehaviorTree::Containers
      */
     class Select : public Container
     {
-    private:
+    protected:
         /// Behaviors sequence.
         std::list<Behavior*> Behaviors;
 
