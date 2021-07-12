@@ -46,6 +46,20 @@ namespace Gaia::BehaviorTree
         }
 
         /**
+        * @brief Construct and add a behavior to this container.
+        * @tparam BehaviorType The type of the behavior to construct.
+        * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+        * @param arguments The arguments to pass to the constructor.
+        * @return Reference to this container.
+        */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        Container& Add(ConstructorArguments... arguments)
+        {
+            Emplace<BehaviorType>(arguments...);
+            return *this;
+        }
+
+        /**
         * @brief Construct and add a behavior to this container repeatedly.
         * @tparam BehaviorType The type of the behavior to construct.
         * @tparam ConstructorArguments The types of arguments to pass to the constructor.
@@ -63,6 +77,21 @@ namespace Gaia::BehaviorTree
                 OnEmplace(node);
             }
             return node;
+        }
+
+        /**
+        * @brief Construct and add a behavior to this container repeatedly.
+        * @tparam BehaviorType The type of the behavior to construct.
+        * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+        * @param count The count of the times to add this behavior.
+        * @param arguments The arguments to pass to the constructor.
+        * @return Reference to this container.
+        */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        Container& RepeatedlyAdd(unsigned int count, ConstructorArguments... arguments)
+        {
+            RepeatedlyEmplace<BehaviorType>(count, arguments...);
+            return *this;
         }
 
         /// Clear this container without triggering finalize event.

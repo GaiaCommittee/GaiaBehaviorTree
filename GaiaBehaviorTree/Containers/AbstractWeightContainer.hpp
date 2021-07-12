@@ -61,6 +61,20 @@ namespace Gaia::BehaviorTree::Containers
         }
 
         /**
+        * @brief Construct and add a behavior to this container.
+        * @tparam BehaviorType The type of the behavior to construct.
+        * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+        * @param arguments The arguments to pass to the constructor.
+        * @return Reference to this container.
+        */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        AbstractWeightContainer& AddWeightNode(unsigned int weight, ConstructorArguments... arguments)
+        {
+            EmplaceWeightNode<BehaviorType>(weight, arguments...);
+            return *this;
+        }
+
+        /**
         * @brief Construct and add a behavior to this container repeatedly.
         * @tparam BehaviorType The type of the behavior to construct.
         * @tparam ConstructorArguments The types of arguments to pass to the constructor.
@@ -79,6 +93,22 @@ namespace Gaia::BehaviorTree::Containers
                 AddWeightNode(node, weight);
             }
             return node;
+        }
+
+        /**
+        * @brief Construct and add a behavior to this container repeatedly.
+        * @tparam BehaviorType The type of the behavior to construct.
+        * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+        * @param count The count of the times to add this behavior.
+        * @param arguments The arguments to pass to the constructor.
+        * @return Reference to this container.
+        */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        AbstractWeightContainer& RepeatedlyAddWeightNode(unsigned int count, unsigned int weight,
+                                                  ConstructorArguments... arguments)
+        {
+            RepeatedlyEmplaceWeightNode<BehaviorType>(count, weight, arguments...);
+            return *this;
         }
     };
 }
