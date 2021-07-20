@@ -70,13 +70,13 @@ namespace Gaia::BehaviorTree
 
 #ifndef BEHAVIOR_MACRO
 #define BEHAVIOR_MACRO
-#define BEHAVIOR(BehaviorType, BehaviorName, ...) \
+#define BEHAVIOR(BehaviorType, BehaviorName, ConstructorArguments...) \
     class Reflected##BehaviorName : public BehaviorType \
     { \
     public: \
-        template <typename... ConstructorArguments> \
+        template <typename... Arguments> \
         explicit Reflected##BehaviorName(Gaia::BehaviorTree::Behavior* parent, \
-            ConstructorArguments... arguments) : \
+            Arguments... arguments) : \
             BehaviorType(parent, arguments...) \
         {} \
         inline void OnInitialize() override { \
@@ -85,14 +85,14 @@ namespace Gaia::BehaviorTree
             BehaviorType::OnFinalize();} \
         inline Gaia::BehaviorTree::Result OnExecute() override { \
             return BehaviorType::OnExecute();}          \
-    } BehaviorName {this, ##__VA_ARGS__};
-#define CONTAINER(ContainerType, ContainerName, Body, ...) \
+    } BehaviorName {this, ##ConstructorArguments};
+#define CONTAINER(ContainerType, ContainerName, Body, ConstructorArguments...) \
     class Reflected##ContainerName : public ContainerType             \
     {                                                    \
     public:                                              \
-        template <typename... ConstructorArguments> \
+        template <typename... Arguments> \
         explicit Reflected##ContainerName(Gaia::BehaviorTree::Behavior* parent, \
-            ConstructorArguments... arguments) : \
+            Arguments... arguments) : \
             ContainerType(parent, arguments...) \
         {} \
         inline void OnInitialize() override { \
@@ -102,14 +102,14 @@ namespace Gaia::BehaviorTree
         inline Gaia::BehaviorTree::Result OnExecute() override { \
             return ContainerType::OnExecute();} \
         Body \
-    } ContainerName {this, ##__VA_ARGS__};
+    } ContainerName {this, ##ConstructorArguments};
 #define CONTAINER_BEGIN(ContainerType, ContainerName) \
     class Reflected##ContainerName : public ContainerType \
     { \
     public: \
-        template <typename... ConstructorArguments> \
+        template <typename... Arguments> \
         explicit Reflected##ContainerName(Gaia::BehaviorTree::Behavior* parent, \
-            ConstructorArguments... arguments) : \
+            Arguments... arguments) : \
             ContainerType(parent, arguments...) \
         {} \
         inline void OnInitialize() override { \
@@ -118,15 +118,15 @@ namespace Gaia::BehaviorTree
             ContainerType::OnFinalize();} \
         inline Gaia::BehaviorTree::Result OnExecute() override { \
             return ContainerType::OnExecute();}
-#define CONTAINER_END(ContainerName, ...) \
-    } ContainerName {this, ##__VA_ARGS__};
-#define DECORATOR(DecoratorType, DecoratorName, Body, ...) \
+#define CONTAINER_END(ContainerName, ConstructorArguments) \
+    } ContainerName {this, ##ConstructorArguments};
+#define DECORATOR(DecoratorType, DecoratorName, Body, ConstructorArguments...) \
     class Reflected##DecoratorName : public DecoratorType  \
     {                                                      \
     public: \
-        template <typename... ConstructorArguments> \
+        template <typename... Arguments> \
         explicit Reflected##DecoratorName(Gaia::BehaviorTree::Behavior* parent, \
-            ConstructorArguments... arguments) : \
+            Arguments... arguments) : \
             DecoratorType(parent, arguments...) \
         {} \
         inline void OnInitialize() override { \
@@ -136,14 +136,14 @@ namespace Gaia::BehaviorTree
         inline Gaia::BehaviorTree::Result OnExecute() override { \
             return DecoratorType::OnExecute();} \
         Body \
-    } DecoratorName {this, ##__VA_ARGS__};
+    } DecoratorName {this, ##ConstructorArguments};
 #define DECORATOR_BEGIN(DecoratorType, DecoratorName) \
     class Reflected##DecoratorName : public DecoratorType \
     { \
     public: \
-        template <typename... ConstructorArguments> \
+        template <typename... Arguments> \
         explicit Reflected##DecoratorName(Gaia::BehaviorTree::Behavior* parent, \
-            ConstructorArguments... arguments) : \
+            Arguments... arguments) : \
             DecoratorType(parent, arguments...) \
         {} \
         inline void OnInitialize() override { \
@@ -152,6 +152,6 @@ namespace Gaia::BehaviorTree
             DecoratorType::OnFinalize();} \
         inline Gaia::BehaviorTree::Result OnExecute() override { \
             return DecoratorType::OnExecute();}
-#define DECORATOR_END(DecoratorName, ...) \
-    } DecoratorName {this, ##__VA_ARGS__};
+#define DECORATOR_END(DecoratorName, ConstructorArguments...) \
+    } DecoratorName {this, ##ConstructorArguments};
 #endif
