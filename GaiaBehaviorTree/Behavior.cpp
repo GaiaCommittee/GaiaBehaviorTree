@@ -1,50 +1,72 @@
 #include "Behavior.hpp"
-#include "Context.hpp"
+
+#include <GaiaExceptions/GaiaExceptions.hpp>
 
 namespace Gaia::BehaviorTree
 {
-    /// Get the context of this behavior.
-    Context *BehaviorTree::Behavior::GetContext()
+    /// Add an element into the set and return it.
+    std::unordered_set<std::string> AddElement(std::unordered_set<std::string>&& elements, const std::string& name)
     {
-        return EnvironmentContext;
+        elements.emplace(name);
+        return elements;
     }
 
-    /// Get the blackboard in the context of this behavior.
-    Blackboards::Blackboard *Behavior::GetBlackboard()
+    /// Constructor with reflection.
+    Behavior::Behavior(Behavior *parent_behavior) :
+        Reflection::ReflectedElement("Behavior", parent_behavior)
+    {}
+
+    /// Reflect this behavior with an additional reflected type name.
+    Behavior::Behavior(const std::string &type_name, Behavior *parent_behavior) :
+        Reflection::ReflectedElement({type_name, "Behavior"}, parent_behavior)
+    {}
+
+    /// Reflect this behavior with additional reflected type names.
+    Behavior::Behavior(std::unordered_set<std::string> type_names, Behavior *parent_behavior) :
+        Reflection::ReflectedElement(AddElement(std::move(type_names), "Behavior"), parent_behavior)
+    {}
+
+    /// Initialize this behavior and its sub behaviors.
+    void Behavior::Initialize()
     {
-        return EnvironmentBlackboard;
+        if (!ContextBlackboard)
+        {
+            ContextBlackboard = std::make_shared<Blackboards::Blackboard>();
+            OwnedContextBlackboard = true;
+        }
+        OnInitialize();
+
+        for (auto* sub_element : GetReflectedElements("Behavior"))
+        {
+            auto* sub_behavior = dynamic_cast<Behavior*>(sub_element);
+            // Pass blackboard to sub behaviors.
+            sub_behavior->ContextBlackboard = ContextBlackboard;
+            sub_behavior->OwnedContextBlackboard = false;
+            sub_behavior->Initialize();
+        }
     }
 
-    /// Default implementation for initialize event.
-    Result Behavior::OnInitialize()
+    /// Finalize this behavior and its sub behaviors.
+    void Behavior::Finalize()
     {
-        return Result::Success;
+        OnFinalize();
+
+        for (auto* sub_element : GetReflectedElements("Behavior"))
+        {
+            auto* sub_behavior = dynamic_cast<Behavior*>(sub_element);
+            sub_behavior->Finalize();
+        }
+
+        if (OwnedContextBlackboard)
+            ContextBlackboard->Clear();
     }
 
-    /// Default implementation for finalize event.
-    Result Behavior::OnFinalize()
+    /// Execute this behavior.
+    Result Behavior::Execute()
     {
-        return Result::Success;
-    }
-
-    /// Execute another behavior.
-    Result Behavior::ExecuteBehavior(Behavior *behavior)
-    {
-        if (!behavior) throw std::runtime_error("Failed to execute behavior, target behavior is null.");
-        return behavior->OnExecute();
-    }
-
-    Result Behavior::RegisterBehavior(Context *context, Behavior *behavior)
-    {
-        if (!context) throw std::runtime_error("Failed to register behavior: null context.");
-        if (!behavior) throw std::runtime_error("Failed to register behavior: null behavior.");
-        return context->RegisterBehavior(behavior);
-    }
-
-    Result Behavior::UnregisterBehavior(Context *context, Behavior *behavior)
-    {
-        if (!context) throw std::runtime_error("Failed to unregister behavior: null context.");
-        if (!behavior) throw std::runtime_error("Failed to unregister behavior: null behavior.");
-        return context->UnregisterBehavior(behavior);
+        if (!ContextBlackboard)
+            throw Exceptions::NullPointerException("Context Blackboard",
+                                                   "This behavior has not been properly initialized.");
+        return OnExecute();
     }
 }

@@ -84,7 +84,19 @@ endif()
 #==============================
 
 # Gaia Blackboards
-add_custom_module(${TARGET_NAME} PUBLIC GaiaBlackboards)
+find_package(GaiaBlackboards)
+target_include_directories(${TARGET_NAME} PUBLIC ${GaiaBlackboards_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PUBLIC ${GaiaBlackboards_LIBS})
+
+# Gaia Reflection
+find_package(GaiaReflection)
+target_include_directories(${TARGET_NAME} PUBLIC ${GaiaReflection_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PUBLIC ${GaiaReflection_LIBS})
+
+# Gaia Exceptions
+find_package(GaiaExceptions)
+target_include_directories(${TARGET_NAME} PUBLIC ${GaiaExceptions_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PUBLIC ${GaiaExceptions_LIBS})
 
 # TBB
 find_path(TBB_INCLUDE "tbb/tbb.h")
