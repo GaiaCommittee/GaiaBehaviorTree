@@ -4,26 +4,14 @@
 
 namespace Gaia::BehaviorTree
 {
-    /// Add an element into the set and return it.
-    std::unordered_set<std::string> AddElement(std::unordered_set<std::string>&& elements, const std::string& name)
-    {
-        elements.emplace(name);
-        return elements;
-    }
-
     /// Constructor with reflection.
     Behavior::Behavior(Behavior *parent_behavior) :
-        Reflection::ReflectedElement("Behavior", parent_behavior)
-    {}
-
-    /// Reflect this behavior with an additional reflected type name.
-    Behavior::Behavior(const std::string &type_name, Behavior *parent_behavior) :
-        Reflection::ReflectedElement({type_name, "Behavior"}, parent_behavior)
+        Reflection::ReflectedElement(parent_behavior, "Behavior")
     {}
 
     /// Reflect this behavior with additional reflected type names.
-    Behavior::Behavior(std::unordered_set<std::string> type_names, Behavior *parent_behavior) :
-        Reflection::ReflectedElement(AddElement(std::move(type_names), "Behavior"), parent_behavior)
+    Behavior::Behavior(Behavior *parent_behavior, const std::unordered_set<std::string>& type_names) :
+        Reflection::ReflectedElement(parent_behavior, type_names)
     {}
 
     /// Initialize this behavior and its sub behaviors.
@@ -36,7 +24,7 @@ namespace Gaia::BehaviorTree
         }
         OnInitialize();
 
-        for (auto* sub_element : GetReflectedElements("Behavior"))
+        for (auto* sub_element : GetReflectedElements())
         {
             auto* sub_behavior = dynamic_cast<Behavior*>(sub_element);
             // Pass blackboard to sub behaviors.

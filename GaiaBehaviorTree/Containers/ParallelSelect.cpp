@@ -7,10 +7,8 @@ namespace Gaia::BehaviorTree::Containers
     Result ParallelSelect::OnExecute()
     {
         tbb::concurrent_vector<Result> results;
-        auto sub_elements = GetReflectedElements("Behaviors");
-        results.reserve(sub_elements.size());
-        tbb::parallel_for_each(sub_elements, [&results](Reflection::ReflectedElement* element){
-            auto* behavior = dynamic_cast<Behavior*>(element);
+        results.reserve(GetInnerNodes().size());
+        tbb::parallel_for_each(GetInnerNodes(), [&results](Behavior* behavior){
             if (behavior)
                 results.push_back(behavior->Execute());
         });

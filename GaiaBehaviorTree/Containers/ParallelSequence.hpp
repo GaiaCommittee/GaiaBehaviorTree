@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Behavior.hpp"
+#include "../Container.hpp"
 
 namespace Gaia::BehaviorTree::Containers
 {
@@ -11,11 +11,9 @@ namespace Gaia::BehaviorTree::Containers
      *        the whole sequence returns Result::Success if all sub behaviors returns success,
      *        and returns Result::Failure when firstly meets a failure.
      */
-    class ParallelSequence : public Behavior
+    class ParallelSequence : public Container
     {
-    public:
-        using Behavior::Behavior;
-
+        REFLECT_TYPE(Gaia::BehaviorTree, Container)
     protected:
         /**
          * @brief Execute sub behaviors in sequence.

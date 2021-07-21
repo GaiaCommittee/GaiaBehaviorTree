@@ -1,39 +1,15 @@
 #pragma once
 
-#include "../Behavior.hpp"
-#include <type_traits>
-#include <memory>
+#include "ConditionalDecorator.hpp"
 
 namespace Gaia::BehaviorTree::Decorators
 {
     /**
      * @brief Behavior decorated by While will be executed until condition of While returns Result::Failure.
-     * @tparam ConditionBehavior Type of condition behavior.
-     * @tparam ConstructorArguments Type of condition behavior constructor arguments.
      */
-    template <typename ConditionBehavior, typename... ConstructorArguments>
-    class While : public Behavior
+    class While : public ConditionalDecorator
     {
-    private:
-        std::unique_ptr<Behavior> Condition;
-
-    public:
-        /// None reflection constructor.
-        While() : Condition(std::make_unique<ConditionBehavior>())
-        {}
-        /// Reflection constructor.
-        explicit While(Behavior* parent) :
-                Condition(std::make_unique<ConditionBehavior>()), Behavior(parent)
-        {}
-        /// None reflection constructor.
-        explicit While(ConstructorArguments... arguments) :
-                Condition(std::make_unique<ConditionBehavior>(arguments...))
-        {}
-        /// Reflection constructor.
-        explicit While(Behavior* parent, ConstructorArguments... arguments) :
-                Condition(std::make_unique<ConditionBehavior>(arguments...)), Behavior(parent)
-        {}
-
+        REFLECT_TYPE(Gaia::BehaviorTree::Decorators, ConditionalDecorator)
     protected:
         /**
          * @brief Execute the first sub behavior if the condition behavior returns Result::Success.
@@ -41,15 +17,13 @@ namespace Gaia::BehaviorTree::Decorators
          */
         Result OnExecute() override
         {
-            auto sub_elements = GetReflectedElements("Behavior");
-            auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
-            if (!behavior) return Result::Failure;
+            if (!GetConditionNode()) return Result::Failure;
 
             Result last_result = Result::Failure;
 
-            while (Condition->Execute() == Result::Success)
+            while (GetConditionNode()->Execute() == Result::Success)
             {
-                last_result = behavior->Execute();
+                last_result = GetDecoratedNode()->Execute();
             }
             return last_result;
         }

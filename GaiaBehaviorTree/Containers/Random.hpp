@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Behavior.hpp"
+#include "../Container.hpp"
 
 #include <random>
 
@@ -10,11 +10,9 @@ namespace Gaia::BehaviorTree::Containers
      * @brief Random is a container that will randomly pick a sub behavior and return its execution result.
      *        Every sub behavior has equal possibility.
      */
-    class Random : public Behavior
+    class Random : public Container
     {
-    public:
-        using Behavior::Behavior;
-
+        REFLECT_TYPE(Gaia::BehaviorTree, Container)
     protected:
         /// Device for generating random value.
         std::random_device RandomDevice;

@@ -1,25 +1,22 @@
 #pragma once
 
-#include "../Behavior.hpp"
-#include <type_traits>
-#include <memory>
+#include "../Decorator.hpp"
 
 namespace Gaia::BehaviorTree::Decorators
 {
     /**
      * @brief Reverse will reverse the execution result of the decorated behavior.
      */
-    class Reverse : public Behavior
+    class Reverse : public Decorator
     {
+        REFLECT_TYPE(Gaia::BehaviorTree, Decorator)
     protected:
         /// Execute the first decorated behavior and returns the reversal result.
         Result OnExecute() override
         {
-            if (Condition->Execute() == Result::Success)
+            if (GetDecoratedNode())
             {
-                auto sub_elements = GetReflectedElements("Behavior");
-                auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
-                if (behavior) return !behavior->Execute();
+                return !GetDecoratedNode()->Execute();
             }
             return Result::Failure;
         }
