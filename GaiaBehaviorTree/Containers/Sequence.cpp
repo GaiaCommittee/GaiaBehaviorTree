@@ -2,12 +2,16 @@
 
 namespace Gaia::BehaviorTree::Containers
 {
-    /// OnExecute the whole sequence.
+    /// Execute sub behaviors in sequence.
     Result Sequence::OnExecute()
     {
-        for (auto& behavior : GetSubBehaviors())
+        for (auto* sub_element : GetReflectedElements("Behavior"))
         {
-            if (behavior->Execute() == Result::Failure) return Result::Failure;
+            auto* behavior = dynamic_cast<Behavior*>(sub_element);
+            if(behavior->Execute() == Result::Failure)
+            {
+                return Result::Failure;
+            }
         }
         return Result::Success;
     }

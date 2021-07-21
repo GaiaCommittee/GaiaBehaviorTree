@@ -1,34 +1,40 @@
 #pragma once
 
-#include "../Decorator.hpp"
+#include "../Behavior.hpp"
+#include <type_traits>
+#include <memory>
 
-namespace Gaia::BehaviorTree
+namespace Gaia::BehaviorTree::Decorators
 {
     /**
-     * @brief This decorator will repeatedly execute the inner behavior until it returns StopValue.
-     * @tparam StopValue When decorated node returns this value, the execution loop will stop.
+     * @brief Behavior decorated by Until Success will be executed in a loop until it succeeds.
      */
-    template<Result StopValue>
-    class Until : public Decorator
+    class UntilSucceed : public Behavior
     {
     protected:
-        /**
-         * @brief Repeatedly execute the decorated node until it returns StopValue.
-         * @return StopValue.
-         */
+        /// Execute the first decorated behavior and returns the reversal result.
         Result OnExecute() override
         {
-            if (!GetDecoratedBehavior()) return Result::Failure;
-            while (GetDecoratedBehavior()->Execute() != StopValue);
-            return StopValue;
+            auto sub_elements = GetReflectedElements("Behavior");
+            auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
+            while (Condition->Execute() != Result::Success)
+            return Result::Success;
         }
     };
 
-    /// Repeatedly execute the decorated node until it succeeded.
-    using UntilSucceeded = Until<Result::Success>;
-    REFLECT_DERIVED_CLASS(Behavior, UntilSuccess)
-
-    /// Repeatedly execute the decorated node until it failed.
-    using UntilFailed = Until<Result::Failure>;
-    REFLECT_DERIVED_CLASS(Behavior, UntilFailure)
+    /**
+     * @brief Behavior decorated by Until Success will be executed in a loop until it fails.
+     */
+    class UntilFail : public Behavior
+    {
+    protected:
+        /// Execute the first decorated behavior and returns the reversal result.
+        Result OnExecute() override
+        {
+            auto sub_elements = GetReflectedElements("Behavior");
+            auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
+            while (Condition->Execute() != Result::Failure)
+                return Result::Success;
+        }
+    };
 }

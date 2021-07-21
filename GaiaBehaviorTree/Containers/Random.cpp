@@ -4,14 +4,24 @@
 
 namespace Gaia::BehaviorTree::Containers
 {
-    /// Randomly pick a node and execute.
+    /// Execute sub behaviors in sequence.
     Result Random::OnExecute()
     {
+        auto sub_elements = GetReflectedElements("Behavior");
+
+        if (sub_elements.empty()) return Result::Failure;
+
         std::default_random_engine engine(RandomDevice());
-        std::uniform_int_distribution<int> distribution(0, static_cast<int>(GetSubBehaviors().size() - 1));
+        std::uniform_int_distribution<int> distribution(0, static_cast<int>(sub_elements.size() - 1));
 
-        unsigned int chosen_weight = distribution(engine);
+        auto chosen_iterator = std::next(sub_elements.begin(), distribution(engine));
 
-        return std::next(GetSubBehaviors().begin(), chosen_weight)->get()->Execute();
+        auto* behavior = dynamic_cast<Behavior*>(*chosen_iterator);
+
+        if (behavior)
+        {
+            return behavior->Execute();
+        }
+        return Result::Failure;
     }
 }

@@ -1,26 +1,28 @@
 #pragma once
 
-#include "../Container.hpp"
+#include "../Behavior.hpp"
 
-#include <tuple>
 #include <random>
 
 namespace Gaia::BehaviorTree::Containers
 {
     /**
-     * @brief This container will randomly pick up a behavior node to execute insides it.
-     * @details
-     *  Every behavior node has a weight and its possibility to be picked up is based on that.
+     * @brief Random is a container that will randomly pick a sub behavior and return its execution result.
+     *        Every sub behavior has equal possibility.
      */
-    class Random : public Container
+    class Random : public Behavior
     {
+    public:
+        using Behavior::Behavior;
+
     protected:
         /// Device for generating random value.
         std::random_device RandomDevice;
 
-        /// Execute the select until a node fails.
+        /**
+         * @brief Execute sub behaviors in sequence.
+         * @return Returns Result::Failure when firstly meets a failure, otherwise return Result::Success.
+         */
         Result OnExecute() override;
     };
-
-    REFLECT_DERIVED_CLASS(Behavior, Random);
 }

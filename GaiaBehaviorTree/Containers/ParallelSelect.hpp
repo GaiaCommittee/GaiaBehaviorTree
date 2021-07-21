@@ -5,11 +5,13 @@
 namespace Gaia::BehaviorTree::Containers
 {
     /**
-     * @brief Select is a list of behaviors that will be executed in sequence,
+     * @brief Parallel Select is the parallel version of Select,
+     *        which means that all sub behaviors will be executed in parallel.
+     *        Select is a list of behaviors that will be executed in sequence,
      *        the whole select returns Result::Failure if all sub behaviors failed,
      *        and returns Result::Success when firstly meets a success.
      */
-    class Select : public Behavior
+    class ParallelSelect : public Behavior
     {
     public:
         using Behavior::Behavior;
