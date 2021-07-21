@@ -21,5 +21,8 @@ namespace Gaia::BehaviorTree
          * @return Raw pointer to the new behavior.
          */
         static std::unique_ptr<Behavior> NewBehavior(const std::string& behavior_name);
+
+        /// Deserialize a behavior tree from a XML document.
+        static std::unique_ptr<Behavior> DeserializeXML(const std::string& xml_path);
     };
 }
