@@ -3,6 +3,8 @@
 #include <GaiaExceptions/GaiaExceptions.hpp>
 #include <tbb/tbb.h>
 
+#include "Reflector.hpp"
+
 namespace Gaia::BehaviorTree
 {
     /// Initialize this behavior and its sub behaviors.
@@ -74,5 +76,11 @@ namespace Gaia::BehaviorTree
            behavior->Finalize();
         });
         SubBehaviors.clear();
+    }
+
+    /// Deserialize this behavior from the document tree.
+    void Behavior::Deserialize(const boost::property_tree::ptree &root_node)
+    {
+        // Behavior should not have sub behaviors.
     }
 }

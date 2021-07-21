@@ -13,7 +13,6 @@ namespace Gaia::BehaviorTree
      */
     class Decorator : public Behavior
     {
-        REFLECT_INTERFACE(Decorator)
     private:
         /// The decorated behavior.
         Behavior* DecoratedBehavior {nullptr};
@@ -24,6 +23,16 @@ namespace Gaia::BehaviorTree
         {
             return DecoratedBehavior;
         }
+
+    public:
+        /**
+         * @brief Deserialize the decorated node.
+         * @param root_node Iterator to the document node of this decorator.
+         * @return Amount of consumed nodes on the same level.
+         * @attention This function only deserialize the decorated node,
+         *            other parts such as condition should be deserialized by derived decorators.
+         */
+        void Deserialize(const boost::property_tree::ptree &root_node) override;
 
     public:
         /**

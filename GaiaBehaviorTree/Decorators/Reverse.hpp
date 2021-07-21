@@ -13,4 +13,6 @@ namespace Gaia::BehaviorTree::Decorators
         /// Execute and reverse the result.
         Result OnExecute() override;
     };
+
+    REFLECT_DERIVED_CLASS(Behavior, Reverse)
 }

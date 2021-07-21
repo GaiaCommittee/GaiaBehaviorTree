@@ -4,7 +4,7 @@
 #include <GaiaBlackboards/GaiaBlackboards.hpp>
 #include <memory>
 #include <list>
-
+#include <boost/property_tree/ptree.hpp>
 #include "Result.hpp"
 
 namespace Gaia::BehaviorTree
@@ -34,6 +34,13 @@ namespace Gaia::BehaviorTree
         Behavior() = default;
 
     protected:
+        /// Add a sub behavior into this behavior.
+        Behavior* AddSubBehavior(std::unique_ptr<Behavior>&& behavior)
+        {
+            auto& pointer = SubBehaviors.emplace_back(std::move(behavior));
+            return pointer.get();
+        }
+
         /// Add a sub behavior into this behavior.
         template<typename BehaviorType, typename... Arguments>
         BehaviorType* AddSubBehavior(Arguments... arguments)
@@ -74,5 +81,11 @@ namespace Gaia::BehaviorTree
         void Finalize();
         /// Execute this behavior.
         Result Execute();
+
+        /**
+         * @brief Do nothing by default. Derived classes can read settings here.
+         * @param root_node Document node for current behavior.
+         */
+        virtual void Deserialize(const boost::property_tree::ptree &root_node);
     };
 };

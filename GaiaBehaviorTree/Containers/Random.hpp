@@ -22,5 +22,5 @@ namespace Gaia::BehaviorTree::Containers
         Result OnExecute() override;
     };
 
-    REFLECT_DERIVED_CLASS(Container, Random);
+    REFLECT_DERIVED_CLASS(Behavior, Random);
 }

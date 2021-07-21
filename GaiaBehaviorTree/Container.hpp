@@ -12,7 +12,14 @@ namespace Gaia::BehaviorTree
      */
     class Container : public Behavior
     {
-        REFLECT_INTERFACE(Container)
+    protected:
+        /**
+         * @brief Deserialize this container.
+         * @param root_node Iterator to the document node of this container.
+         * @return Amount of consumed nodes on the same level.
+         */
+        void Deserialize(const boost::property_tree::ptree &root_node) override;
+
     public:
         /**
         * @brief Construct and add a behavior to this container.

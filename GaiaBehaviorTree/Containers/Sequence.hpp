@@ -18,5 +18,4 @@ namespace Gaia::BehaviorTree::Containers
     };
 
     REFLECT_DERIVED_CLASS(Behavior, Sequence)
-    REFLECT_DERIVED_CLASS(Container, Sequence)
 }

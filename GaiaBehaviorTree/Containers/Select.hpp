@@ -16,5 +16,4 @@ namespace Gaia::BehaviorTree::Containers
     };
 
     REFLECT_DERIVED_CLASS(Behavior, Select)
-    REFLECT_DERIVED_CLASS(Container, Select)
 }

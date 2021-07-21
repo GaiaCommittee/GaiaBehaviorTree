@@ -26,6 +26,9 @@ namespace Gaia::BehaviorTree
 
     /// Repeatedly execute the decorated node until it succeeded.
     using UntilSucceeded = Until<Result::Success>;
+    REFLECT_DERIVED_CLASS(Behavior, UntilSuccess)
+
     /// Repeatedly execute the decorated node until it failed.
     using UntilFailed = Until<Result::Failure>;
+    REFLECT_DERIVED_CLASS(Behavior, UntilFailure)
 }

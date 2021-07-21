@@ -18,4 +18,9 @@ namespace Gaia::BehaviorTree::Decorators
             return TargetResult;
         }
     };
+
+    using ForceSucess = ForceResult<Result::Success>;
+    REFLECT_DERIVED_CLASS(Behavior, ForceSuccess)
+    using ForceFailure = ForceResult<Result::Failure>;
+    REFLECT_DERIVED_CLASS(Behavior, ForceFailure)
 }

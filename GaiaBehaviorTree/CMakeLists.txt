@@ -98,6 +98,11 @@ find_package(GaiaExceptions)
 target_include_directories(${TARGET_NAME} PUBLIC ${GaiaExceptions_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PUBLIC ${GaiaExceptions_LIBS})
 
+# Boost
+find_package(Boost 1.65 REQUIRED)
+target_include_directories(${TARGET_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PUBLIC ${Boost_LIBRARIES})
+
 # TBB
 find_path(TBB_INCLUDE "tbb/tbb.h")
 find_library(TBB_LIB "libtbb.so")

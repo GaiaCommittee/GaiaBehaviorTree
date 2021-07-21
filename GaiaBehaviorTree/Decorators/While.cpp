@@ -1,16 +1,15 @@
 #include "While.hpp"
-#include "../Context.hpp"
 
 namespace Gaia::BehaviorTree::Decorators
 {
     /// Execute until the condition node returns Failure.
     Result While::OnExecute()
     {
-        if (!ConditionNode || !GetDecoratedBehavior()) return Result::Failure;
+        if (!GetConditionBehavior() || !GetDecoratedBehavior()) return Result::Failure;
 
         Result last_result = Result::Failure;
 
-        while (ConditionNode->Execute() != Result::Failure)
+        while (GetConditionBehavior()->Execute() != Result::Failure)
         {
             if (GetDecoratedBehavior())
             {
