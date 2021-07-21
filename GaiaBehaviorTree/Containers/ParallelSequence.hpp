@@ -1,26 +1,21 @@
 #pragma once
 
-#include "../Behavior.hpp"
+#include "Sequence.hpp"
 
 namespace Gaia::BehaviorTree::Containers
 {
     /**
-     * @brief Parallel Sequence is the parallel version of Sequence,
-     *        which means that all sub behaviors will be executed in parallel.
-     *        Sequence is a list of behaviors that will be executed in sequence,
-     *        the whole sequence returns Result::Success if all sub behaviors returns success,
-     *        and returns Result::Failure when firstly meets a failure.
+     * @brief A parallel sequence will stop and return Failure when any inner Behavior returns Failure,
+     *        and otherwise return Success. All nodes will be executed in parallel, but the result can
+     *        only be determined after all nodes have been executed.
      */
-    class ParallelSequence : public Behavior
+    class ParallelSequence : public Sequence
     {
-    public:
-        using Behavior::Behavior;
-
     protected:
-        /**
-         * @brief Execute sub behaviors in sequence.
-         * @return Returns Result::Failure when firstly meets a failure, otherwise return Result::Success.
-         */
+        /// Execute the sequence in parallel.
         Result OnExecute() override;
     };
+
+    REFLECT_DERIVED_CLASS(Behavior, ParallelSequence)
+    REFLECT_DERIVED_CLASS(Container, ParallelSequence)
 }

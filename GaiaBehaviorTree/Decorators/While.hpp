@@ -1,57 +1,45 @@
 #pragma once
 
-#include "../Behavior.hpp"
-#include <type_traits>
-#include <memory>
+#include "../Decorator.hpp"
+
+#include <functional>
 
 namespace Gaia::BehaviorTree::Decorators
 {
     /**
-     * @brief Behavior decorated by While will be executed until condition of While returns Result::Failure.
-     * @tparam ConditionBehavior Type of condition behavior.
-     * @tparam ConstructorArguments Type of condition behavior constructor arguments.
+     * @brief Decorated node will be repeatedly executed until condition node returns failure.
      */
-    template <typename ConditionBehavior, typename... ConstructorArguments>
-    class While : public Behavior
+    class While : public Decorator
     {
     private:
-        std::unique_ptr<Behavior> Condition;
-
-    public:
-        /// None reflection constructor.
-        While() : Condition(std::make_unique<ConditionBehavior>())
-        {}
-        /// Reflection constructor.
-        explicit While(Behavior* parent) :
-                Condition(std::make_unique<ConditionBehavior>()), Behavior(parent)
-        {}
-        /// None reflection constructor.
-        explicit While(ConstructorArguments... arguments) :
-                Condition(std::make_unique<ConditionBehavior>(arguments...))
-        {}
-        /// Reflection constructor.
-        explicit While(Behavior* parent, ConstructorArguments... arguments) :
-                Condition(std::make_unique<ConditionBehavior>(arguments...)), Behavior(parent)
-        {}
+        /// The condition node.
+        Behavior* ConditionNode;
 
     protected:
         /**
-         * @brief Execute the first sub behavior if the condition behavior returns Result::Success.
-         * @details Returns the last result of the decorated behavior as the whole result.
+         * @brief Execute until the condition node returns Failure.
+         * @return Returns Failure if condition node is null, otherwise returns the result from the inner behavior
+         *         when condition node firstly returns Failure.
          */
-        Result OnExecute() override
+        Result OnExecute() override;
+
+    public:
+        /**
+         * @brief Construct and add this behavior as the condition node to this decorator.
+         * @tparam BehaviorType The type of the behavior to construct.
+         * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+         * @param arguments The arguments to pass to the constructor.
+         * @return The pointer to the constructed behavior.
+         * @details
+         *  Previous decorated behavior will be replaced without triggering OnFinalize(),
+         *  because it may have not been initialized by the time it is replaced.
+         */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        BehaviorType* EmplaceCondition(ConstructorArguments... arguments)
         {
-            auto sub_elements = GetReflectedElements("Behavior");
-            auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
-            if (!behavior) return Result::Failure;
-
-            Result last_result = Result::Failure;
-
-            while (Condition->Execute() == Result::Success)
-            {
-                last_result = behavior->Execute();
-            }
-            return last_result;
+            if (ConditionNode) ConditionNode->Finalize();
+            ConditionNode = AddSubBehavior<BehaviorType>(arguments...);
+            return ConditionNode;
         }
     };
 }

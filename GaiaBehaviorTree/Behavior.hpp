@@ -3,6 +3,7 @@
 #include <GaiaReflection/GaiaReflection.hpp>
 #include <GaiaBlackboards/GaiaBlackboards.hpp>
 #include <memory>
+#include <list>
 
 #include "Result.hpp"
 
@@ -11,8 +12,9 @@ namespace Gaia::BehaviorTree
     /**
      * @brief Behavior can be declared in other behaviors and have their own sub behaviors.
      */
-    class Behavior : public Reflection::ReflectedContainer, public Reflection::ReflectedElement
+    class Behavior : public Reflection::ReflectedInterface
     {
+        REFLECT_INTERFACE(Behavior)
     private:
         /**
          * @brief Blackboard for variables accessing.
@@ -24,38 +26,45 @@ namespace Gaia::BehaviorTree
         /// Whether the context blackboard is constructed and owned by this behavior.
         bool OwnedContextBlackboard {false};
 
+        /// Sub behaviors for this behavior.
+        std::list<std::unique_ptr<Behavior>> SubBehaviors;
+
     public:
         /// None reflection constructor.
         Behavior() = default;
-        /// Reflection constructor when this behavior is added to another behavior.
-        explicit Behavior(Behavior* parent_behavior);
 
     protected:
-        /**
-         * @brief Reflect this behavior with an additional reflected type name.
-         * @param type_name Additional type name along side with "Behavior".
-         * @param parent_behavior Parent behavior to register.
-         */
-        Behavior(const std::string& type_name, Behavior* parent_behavior);
-        /**
-         * @brief Reflect this behavior with additional reflected type names.
-         * @param type_names Additional type names along side with "Behavior".
-         * @param parent_behavior Parent behavior to register.
-         */
-        Behavior(std::unordered_set<std::string> type_names, Behavior* parent_behavior);
+        /// Add a sub behavior into this behavior.
+        template<typename BehaviorType, typename... Arguments>
+        BehaviorType* AddSubBehavior(Arguments... arguments)
+        {
+            static_assert(std::is_base_of_v<Behavior, BehaviorType>, "BehaviorType should be derived from Behavior.");
+            auto iterator = SubBehaviors.emplace(std::make_unique<BehaviorType>(arguments...));
+            return iterator->get();
+        }
 
-    protected:
+        /// Remove the given sub behavior.
+        void RemoveSubBehavior(Behavior* behavior);
+
+        /// Clear all sub behaviors.
+        void ClearSubBehavior();
+
+        /// Get sub behaviors of this behavior.
+        [[nodiscard]] const decltype(SubBehaviors)& GetSubBehaviors() const noexcept
+        {
+            return SubBehaviors;
+        }
+
         /// Get the blackboard of this behavior.
         [[nodiscard]] inline Blackboards::Blackboard* GetBlackboard() const noexcept
         {
             return ContextBlackboard.get();
         }
-
-        /// Invoked when this behavior is initialized.
+        /// Invoked when this behavior is initializing.
         virtual void OnInitialize() {};
-        /// Invoked when this behavior is finalized.
+        /// Invoked when this behavior is finalizing.
         virtual void OnFinalize() {};
-        /// Invoked when this behavior is executed.
+        /// Invoked when this behavior is being executed.
         virtual Result OnExecute() = 0;
 
     public:
@@ -67,91 +76,3 @@ namespace Gaia::BehaviorTree
         Result Execute();
     };
 };
-
-#ifndef BEHAVIOR_MACRO
-#define BEHAVIOR_MACRO
-#define BEHAVIOR(BehaviorType, BehaviorName, ConstructorArguments...) \
-    class Reflected##BehaviorName : public BehaviorType \
-    { \
-    public: \
-        template <typename... Arguments> \
-        explicit Reflected##BehaviorName(Gaia::BehaviorTree::Behavior* parent, \
-            Arguments... arguments) : \
-            BehaviorType(parent, arguments...) \
-        {} \
-        inline void OnInitialize() override { \
-            BehaviorType::OnInitialize();} \
-        inline void OnFinalize() override { \
-            BehaviorType::OnFinalize();} \
-        inline Gaia::BehaviorTree::Result OnExecute() override { \
-            return BehaviorType::OnExecute();}          \
-    } BehaviorName {this, ##ConstructorArguments};
-#define CONTAINER(ContainerType, ContainerName, Body, ConstructorArguments...) \
-    class Reflected##ContainerName : public ContainerType             \
-    {                                                    \
-    public:                                              \
-        template <typename... Arguments> \
-        explicit Reflected##ContainerName(Gaia::BehaviorTree::Behavior* parent, \
-            Arguments... arguments) : \
-            ContainerType(parent, arguments...) \
-        {} \
-        inline void OnInitialize() override { \
-            ContainerType::OnInitialize();} \
-        inline void OnFinalize() override { \
-            ContainerType::OnFinalize();} \
-        inline Gaia::BehaviorTree::Result OnExecute() override { \
-            return ContainerType::OnExecute();} \
-        Body \
-    } ContainerName {this, ##ConstructorArguments};
-#define CONTAINER_BEGIN(ContainerType, ContainerName) \
-    class Reflected##ContainerName : public ContainerType \
-    { \
-    public: \
-        template <typename... Arguments> \
-        explicit Reflected##ContainerName(Gaia::BehaviorTree::Behavior* parent, \
-            Arguments... arguments) : \
-            ContainerType(parent, arguments...) \
-        {} \
-        inline void OnInitialize() override { \
-            ContainerType::OnInitialize();} \
-        inline void OnFinalize() override { \
-            ContainerType::OnFinalize();} \
-        inline Gaia::BehaviorTree::Result OnExecute() override { \
-            return ContainerType::OnExecute();}
-#define CONTAINER_END(ContainerName, ConstructorArguments) \
-    } ContainerName {this, ##ConstructorArguments};
-#define DECORATOR(DecoratorType, DecoratorName, Body, ConstructorArguments...) \
-    class Reflected##DecoratorName : public DecoratorType  \
-    {                                                      \
-    public: \
-        template <typename... Arguments> \
-        explicit Reflected##DecoratorName(Gaia::BehaviorTree::Behavior* parent, \
-            Arguments... arguments) : \
-            DecoratorType(parent, arguments...) \
-        {} \
-        inline void OnInitialize() override { \
-            DecoratorType::OnInitialize();} \
-        inline void OnFinalize() override { \
-            DecoratorType::OnFinalize();} \
-        inline Gaia::BehaviorTree::Result OnExecute() override { \
-            return DecoratorType::OnExecute();} \
-        Body \
-    } DecoratorName {this, ##ConstructorArguments};
-#define DECORATOR_BEGIN(DecoratorType, DecoratorName) \
-    class Reflected##DecoratorName : public DecoratorType \
-    { \
-    public: \
-        template <typename... Arguments> \
-        explicit Reflected##DecoratorName(Gaia::BehaviorTree::Behavior* parent, \
-            Arguments... arguments) : \
-            DecoratorType(parent, arguments...) \
-        {} \
-        inline void OnInitialize() override { \
-            DecoratorType::OnInitialize();} \
-        inline void OnFinalize() override { \
-            DecoratorType::OnFinalize();} \
-        inline Gaia::BehaviorTree::Result OnExecute() override { \
-            return DecoratorType::OnExecute();}
-#define DECORATOR_END(DecoratorName, ConstructorArguments...) \
-    } DecoratorName {this, ##ConstructorArguments};
-#endif

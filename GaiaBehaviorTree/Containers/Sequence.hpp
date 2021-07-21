@@ -1,24 +1,22 @@
 #pragma once
 
-#include "../Behavior.hpp"
+#include "../Container.hpp"
+
+#include <list>
 
 namespace Gaia::BehaviorTree::Containers
 {
     /**
-     * @brief Sequence is a list of behaviors that will be executed in sequence,
-     *        the whole sequence returns Result::Success if all sub behaviors returns success,
-     *        and returns Result::Failure when firstly meets a failure.
+     * @brief A sequence will stop and return Failure when any inner Behavior returns Failure,
+     *        and otherwise return Success.
      */
-    class Sequence : public Behavior
+    class Sequence : public Container
     {
     public:
-        using Behavior::Behavior;
-
-    protected:
-        /**
-         * @brief Execute sub behaviors in sequence.
-         * @return Returns Result::Failure when firstly meets a failure, otherwise return Result::Success.
-         */
+        /// Execute the sequence until a node fails.
         Result OnExecute() override;
     };
+
+    REFLECT_DERIVED_CLASS(Behavior, Sequence)
+    REFLECT_DERIVED_CLASS(Container, Sequence)
 }

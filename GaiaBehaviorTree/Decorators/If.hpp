@@ -1,50 +1,42 @@
 #pragma once
 
-#include "../Behavior.hpp"
-#include <type_traits>
-#include <memory>
+#include "../Decorator.hpp"
 
 namespace Gaia::BehaviorTree::Decorators
 {
     /**
-     * @brief Behavior decorated by If will only be executed when condition of If returns Result::Success.
-     * @tparam ConditionBehavior Type of condition behavior.
-     * @tparam ConstructorArguments Type of condition behavior constructor arguments.
+     * @brief Decorated node can only be executed when condition node returns success.
      */
-    template <typename ConditionBehavior, typename... ConstructorArguments>
-    class If : public Behavior
+    class If : public Decorator
     {
     private:
-        std::unique_ptr<Behavior> Condition;
-
-    public:
-        /// None reflection constructor.
-        If() : Condition(std::make_unique<ConditionBehavior>())
-        {}
-        /// Reflection constructor.
-        explicit If(Behavior* parent) :
-                Condition(std::make_unique<ConditionBehavior>()), Behavior(parent)
-        {}
-        /// None reflection constructor.
-        explicit If(ConstructorArguments... arguments) :
-            Condition(std::make_unique<ConditionBehavior>(arguments...))
-        {}
-        /// Reflection constructor.
-        explicit If(Behavior* parent, ConstructorArguments... arguments) :
-            Condition(std::make_unique<ConditionBehavior>(arguments...)), Behavior(parent)
-        {}
+        /// The condition node.
+        Behavior* ConditionNode;
 
     protected:
-        /// Execute the first sub behavior if the condition behavior returns Result::Success.
-        Result OnExecute() override
+        /**
+         * @brief Execute if the condition node return Success.
+         * @return The execution result of the decorated node, otherwise returns Result::Failure.
+         */
+        Result OnExecute() override;
+
+    public:
+        /**
+         * @brief Construct and add this behavior as the condition node to this decorator.
+         * @tparam BehaviorType The type of the behavior to construct.
+         * @tparam ConstructorArguments The types of arguments to pass to the constructor.
+         * @param arguments The arguments to pass to the constructor.
+         * @return The pointer to the constructed behavior.
+         * @details
+         *  Previous decorated behavior will be replaced without triggering OnFinalize(),
+         *  because it may have not been initialized by the time it is replaced.
+         */
+        template <typename BehaviorType, typename... ConstructorArguments>
+        BehaviorType* EmplaceCondition(ConstructorArguments... arguments)
         {
-            if (Condition->Execute() == Result::Success)
-            {
-                auto sub_elements = GetReflectedElements("Behavior");
-                auto* behavior = dynamic_cast<Behavior*>(*sub_elements.begin());
-                if (behavior) return behavior->Execute();
-            }
-            return Result::Failure;
+            if (ConditionNode) ConditionNode->Finalize();
+            ConditionNode = AddSubBehavior<BehaviorType>(arguments...);
+            return ConditionNode;
         }
     };
 }

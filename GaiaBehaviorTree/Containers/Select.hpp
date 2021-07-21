@@ -1,24 +1,20 @@
 #pragma once
 
-#include "../Behavior.hpp"
+#include "../Container.hpp"
 
 namespace Gaia::BehaviorTree::Containers
 {
     /**
-     * @brief Select is a list of behaviors that will be executed in sequence,
-     *        the whole select returns Result::Failure if all sub behaviors failed,
-     *        and returns Result::Success when firstly meets a success.
+     * @brief A Select will stop and return Success when any inner Behavior returns Success,
+     *        and otherwise return Failure.
      */
-    class Select : public Behavior
+    class Select : public Container
     {
     public:
-        using Behavior::Behavior;
-
-    protected:
-        /**
-         * @brief Execute sub behaviors in sequence.
-         * @return Returns Result::Failure when firstly meets a failure, otherwise return Result::Success.
-         */
+        /// Execute the select until a node fails.
         Result OnExecute() override;
     };
+
+    REFLECT_DERIVED_CLASS(Behavior, Select)
+    REFLECT_DERIVED_CLASS(Container, Select)
 }
