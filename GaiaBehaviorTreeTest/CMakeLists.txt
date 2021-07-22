@@ -17,7 +17,7 @@ endif()
 # Unit Settings
 #==============================
 
-set(TARGET_NAME "GaiaBlackboardsTest")
+set(TARGET_NAME "GaiaBehaviorTreeTest")
 
 #==============================
 # Command Lines
@@ -78,7 +78,13 @@ endif()
 
 # Gaia Behavior Tree
 target_include_directories(${TARGET_NAME} PUBLIC "../")
-target_link_libraries(${TARGET_NAME} PUBLIC "GaiaBehaviorTree")
+target_link_libraries(${TARGET_NAME} PUBLIC BehaviorTree)
+
+# Boost
+find_package(Boost 1.65 REQUIRED COMPONENTS stacktrace_backtrace)
+target_compile_definitions(${TARGET_NAME} PRIVATE -DBOOST_STACKTRACE_LINK -DBOOST_STACKTRACE_USE_BACKTRACE)
+target_include_directories(${TARGET_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PUBLIC ${Boost_LIBRARIES})
 
 # GTest
 find_package(GTest REQUIRED)
