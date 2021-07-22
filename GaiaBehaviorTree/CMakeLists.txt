@@ -60,17 +60,17 @@ target_include_directories(${TARGET_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PUBLIC ${Boost_LIBRARIES})
 
 # Gaia Blackboards
-find_package(GaiaBlackboards)
+find_package(GaiaBlackboards 0.9)
 target_include_directories(${TARGET_NAME} PUBLIC ${GaiaBlackboards_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PUBLIC Gaia::Blackboards)
 
 # Gaia Reflection
-find_package(GaiaReflection)
+find_package(GaiaReflection 0.9)
 target_include_directories(${TARGET_NAME} PUBLIC ${GaiaReflection_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PUBLIC Gaia::Reflection)
 
 # Gaia Exceptions
-find_package(GaiaExceptions)
+find_package(GaiaExceptions 0.9)
 target_include_directories(${TARGET_NAME} PUBLIC ${GaiaExceptions_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PUBLIC Gaia::Exceptions)
 
