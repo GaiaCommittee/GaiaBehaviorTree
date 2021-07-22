@@ -15,8 +15,13 @@ namespace Gaia::BehaviorTree
     {}
 
     /// Initialize this behavior and its sub behaviors.
-    void Behavior::Initialize()
+    void Behavior::Initialize(const decltype(ContextBlackboard)& blackboard)
     {
+        if (blackboard)
+        {
+            ContextBlackboard = blackboard;
+            OwnedContextBlackboard = false;
+        }
         if (!ContextBlackboard)
         {
             ContextBlackboard = std::make_shared<Blackboards::Blackboard>();
@@ -28,9 +33,7 @@ namespace Gaia::BehaviorTree
         {
             auto* sub_behavior = dynamic_cast<Behavior*>(sub_element);
             // Pass blackboard to sub behaviors.
-            sub_behavior->ContextBlackboard = ContextBlackboard;
-            sub_behavior->OwnedContextBlackboard = false;
-            sub_behavior->Initialize();
+            sub_behavior->Initialize(ContextBlackboard);
         }
     }
 

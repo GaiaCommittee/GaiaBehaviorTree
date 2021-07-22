@@ -52,7 +52,8 @@ namespace Gaia::BehaviorTree
         }
 
         /// Initialize this behavior and its sub behaviors.
-        void Initialize();
+        void Initialize(const std::shared_ptr<Blackboards::Blackboard>& blackboard =
+                std::shared_ptr<Blackboards::Blackboard>());
         /// Finalize this behavior and its sub behaviors.
         void Finalize();
         /// Execute this behavior.
