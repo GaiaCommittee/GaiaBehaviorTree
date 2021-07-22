@@ -37,12 +37,6 @@ namespace Gaia::BehaviorTree
         Behavior(Behavior *parent_behavior, const std::unordered_set<std::string>& type_names);
 
     protected:
-        /// Get the blackboard of this behavior.
-        [[nodiscard]] inline Blackboards::Blackboard* GetBlackboard() const noexcept
-        {
-            return ContextBlackboard.get();
-        }
-
         /// Invoked when this behavior is initialized.
         virtual void OnInitialize() {};
         /// Invoked when this behavior is finalized.
@@ -51,6 +45,12 @@ namespace Gaia::BehaviorTree
         virtual Result OnExecute() = 0;
 
     public:
+        /// Get the blackboard of this behavior.
+        [[nodiscard]] inline Blackboards::Blackboard* GetBlackboard() const noexcept
+        {
+            return ContextBlackboard.get();
+        }
+
         /// Initialize this behavior and its sub behaviors.
         void Initialize();
         /// Finalize this behavior and its sub behaviors.
