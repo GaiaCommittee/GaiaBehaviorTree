@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
 
-find_package(Boost REQUIRED COMPONENTS stacktrace_backtrace)
 find_package(GaiaBlackboards)
 find_package(GaiaReflection)
 find_package(GaiaExceptions)

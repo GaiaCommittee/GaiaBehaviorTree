@@ -53,12 +53,6 @@ endif()
 # Dependencies
 #==============================
 
-# Boost
-find_package(Boost 1.65 REQUIRED COMPONENTS stacktrace_backtrace)
-target_compile_definitions(${TARGET_NAME} PRIVATE -DBOOST_STACKTRACE_LINK -DBOOST_STACKTRACE_USE_BACKTRACE)
-target_include_directories(${TARGET_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
-target_link_libraries(${TARGET_NAME} PUBLIC ${Boost_LIBRARIES})
-
 # Gaia Blackboards
 find_package(GaiaBlackboards 0.9)
 target_include_directories(${TARGET_NAME} PUBLIC ${GaiaBlackboards_INCLUDE_DIRS})
