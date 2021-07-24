@@ -49,7 +49,7 @@ namespace Gaia::BehaviorTree
         }
 
         if (OwnedContextBlackboard)
-            ContextBlackboard->Clear();
+            ContextBlackboard->ClearItems();
     }
 
     /// Execute this behavior.
