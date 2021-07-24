@@ -8,6 +8,7 @@
 #include "Decorators/Reverse.hpp"
 #include "Decorators/Until.hpp"
 #include "Decorators/While.hpp"
+#include "Decorators/ForceResult.hpp"
 
 #include "Container.hpp"
 
